@@ -17,27 +17,29 @@ csv.register_dialect('semikolon', delimiter=';', quotechar='"')
 csv.register_dialect('space', delimiter=' ', quotechar='"')
 
 # Nun legen wir unsere Ein- und Ausgabedateien und die zu benutzenden Dialekte fest:
+def eingabe(file1,file2):
+  infiles = [[file1, 'komma'],
+             [file2, 'semikolon']]
 
-infiles = [['infile1.csv', 'komma'],
-           ['infile2.csv', 'semikolon']]
+  outfile = ['outfile.csv', 'space']
 
-outfile = ['outfile.csv', 'space']
+  # Wir erzeugen eine Liste, in der die Eingabezeilen gespeichert werden.
 
-# Wir erzeugen eine Liste, in der die Eingabezeilen gespeichert werden.
+  rows = []
 
-rows = []
+  # Nun iterieren wir ueber alle Eingabedateien und speichern deren Zeilen in der Liste.
 
-# Nun iterieren wir ueber alle Eingabedateien und speichern deren Zeilen in der Liste.
+  for infile in infiles:
+    with open(infile[0], 'rt') as csvfile:
+      myreader = csv.reader(csvfile, infile[1])
+      for row in myreader:
+        rows.append(row)
 
-for infile in infiles:
-  with open(infile[0], 'rt') as csvfile:
-    myreader = csv.reader(csvfile, infile[1])
-    for row in myreader:
-      rows.append(row)
+  # Die Liste schreiben wir nun in die Ausgabedatei.
 
-# Die Liste schreiben wir nun in die Ausgabedatei.
+  with open(outfile[0], 'wt') as csvfile:
+    mywriter = csv.writer(csvfile, outfile[1])
+    for row in rows:
+      mywriter.writerow(row)
 
-with open(outfile[0], 'wt') as csvfile:
-  mywriter = csv.writer(csvfile, outfile[1])
-  for row in rows:
-    mywriter.writerow(row)
+eingabe('infile1.csv','infile2.csv')
